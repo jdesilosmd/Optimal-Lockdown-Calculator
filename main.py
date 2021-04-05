@@ -196,7 +196,7 @@ def run_simulation():
     st.dataframe(df_time.style)
 
     def get_table_download_link_csv(df):
-        csv_export = df.to_csv().encode()
+        csv_export = df.to_csv(index=False).encode()
         b64 = base64.b64encode(csv_export).decode()
         href = f'<a href="data:file/csv;base64,{b64}" download="Optimum_Lockdown.csv" target="_blank">Download csv file</a>'
         return href
