@@ -10,7 +10,7 @@ import base64
 
 # Title
 st.title('Optimal Lockdown Calculator')
-st.markdown('###### **Beta Version:** 1.00')
+st.markdown('###### **Beta Version:** 1.01')
 st.markdown('##')
 st.write('This web-based app aims to aid policymakers in identifying the optimal lockdown strength and duration needed\n'
          'to reduce transmission of the SARS-Cov-2 virus and at the same time, reducing the economic loss due to prolonged\n'
@@ -116,7 +116,8 @@ def run_simulation():
     predict_graph = make_subplots(rows=4, cols=1, subplot_titles=("SEIR Model - No Lockdown",
                                                                   "Fraction of Susceptible and Recovered",
                                                                   "Fraction of Exposed and Infected",
-                                                                  "Degree of Lockdown"))
+                                                                  "Degree of Lockdown (0% = None, 100% = Full Lockdown)"
+                                                                  ))
 
     predict_graph.add_trace(go.Scatter(x=m.time, y=s.value, name='Susceptible',
                                        line=dict(color='teal', width=3)), row=1, col=1)
@@ -174,10 +175,39 @@ def run_simulation():
     predict_graph.update_yaxes(title_text='Fraction', row=3, col=1, zeroline=True, zerolinecolor='black')
 
 
-    predict_graph.add_trace(go.Scatter(x=m.time, y=u.value, name="Optimal Lockdown (0=None, 1=Full Lockdown)",
+    d = {'Day': m.time, '% Lockdown Strength': u.value}
+    df_time = pd.DataFrame(data=d)
+    df_time['% Lockdown Strength'] = (df_time['% Lockdown Strength']*100)
+    df_time['% Lockdown Strength'] = df_time['% Lockdown Strength'].round(2)
+    df_time['% Adjusted Lockdown Strength'] = df_time['% Lockdown Strength']
+    df_time['% Adjusted Lockdown Strength'].iloc[1:8] =df_time['% Lockdown Strength'].iloc[1:8].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[8:15] = df_time['% Lockdown Strength'].iloc[8:15].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[15:22] = df_time['% Lockdown Strength'].iloc[15:22].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[22:29] = df_time['% Lockdown Strength'].iloc[22:29].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[29:36] = df_time['% Lockdown Strength'].iloc[29:36].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[36:43] = df_time['% Lockdown Strength'].iloc[36:43].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[43:50] = df_time['% Lockdown Strength'].iloc[43:50].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[50:57] = df_time['% Lockdown Strength'].iloc[50:57].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[57:64] = df_time['% Lockdown Strength'].iloc[57:64].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[64:71] = df_time['% Lockdown Strength'].iloc[64:71].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[71:78] = df_time['% Lockdown Strength'].iloc[71:78].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[78:85] = df_time['% Lockdown Strength'].iloc[78:85].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[85:92] = df_time['% Lockdown Strength'].iloc[85:92].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[92:99] = df_time['% Lockdown Strength'].iloc[92:99].max()
+    df_time['% Adjusted Lockdown Strength'].iloc[99:101] = df_time['% Lockdown Strength'].iloc[99:101].max()
+    df_time.Day = df_time.Day.astype(int)
+
+
+
+    predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Lockdown Strength'],
+                                       name="Optimal Lockdown (0=None, 1=Full Lockdown)",
                                        mode='lines', line=dict(color='red', width=2, shape='vh')), row=4, col=1)
+    predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Adjusted Lockdown Strength'],
+                                       name="14-day Adjusted Optimal Lockdown",
+                                       mode='lines', line=dict(color='black', dash='dot',
+                                                               width=2, shape='vh')), row=4, col=1)
     predict_graph.update_xaxes(title_text="Time (Days)", row=4, col=1, zeroline=True, zerolinecolor='black')
-    predict_graph.update_yaxes(title_text='Lockdown Strength', row=4, col=1, zeroline=True, zerolinecolor='black')
+    predict_graph.update_yaxes(title_text='% Lockdown Strength', row=4, col=1, zeroline=True, zerolinecolor='black')
 
 
     predict_graph.update_layout(template='seaborn', autosize=False, width=1000, height=1500,
@@ -189,11 +219,17 @@ def run_simulation():
 
     # Generate a table of results
 
-    d = {'Day': m.time, 'Lockdown Strength': u.value}
-    df_time = pd.DataFrame(data=d)
-    df_time.Day = df_time.Day.astype(int)
-    st.markdown('### Detailed table of recommended lockdown strength adjustment every 2 days (for 200 days):')
-    st.dataframe(df_time.style)
+    st.markdown('### Detailed table of recommended lockdown strength adjustment every 2 days and 14 days (for 200 days):')
+    df_time_table = go.Figure(data=[go.Table(
+        header=dict(values=list(df_time.columns),
+                    fill_color='lightskyblue',
+                    align='left'),
+        cells=dict(values=[df_time['Day'], df_time['% Lockdown Strength'], df_time['% Adjusted Lockdown Strength']],
+                   fill_color='azure',
+                   align='left'))
+    ])
+
+    st.plotly_chart(df_time_table, use_container_width=True)
 
     def get_table_download_link_csv(df):
         csv_export = df.to_csv(index=False).encode()
