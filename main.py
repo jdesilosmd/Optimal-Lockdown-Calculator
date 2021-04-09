@@ -40,7 +40,7 @@ Rt_in = st.sidebar.number_input(
 )
 
 t_incubation = st.sidebar.number_input(
-    label='Type in the incubation period (in days)"',
+    label='Type in the incubation period (in days):',
     value=5.1
 )
 
