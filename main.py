@@ -123,7 +123,7 @@ def run_simulation():
                                        line=dict(color='teal', width=3)), row=1, col=1)
     predict_graph.add_trace(go.Scatter(x=m.time, y=r.value, name='Recovered',
                                        line=dict(color='firebrick', width=3)), row=1, col=1)
-    predict_graph.add_trace(go.Scatter(x=m.time, y=i.value, name='Infective',
+    predict_graph.add_trace(go.Scatter(x=m.time, y=i.value, name='Infectious',
                                        line=dict(color='orange', width=3)), row=1, col=1)
     predict_graph.add_trace(go.Scatter(x=m.time, y=e.value, name='Exposed',
                                        line=dict(color='purple', width=3)), row=1, col=1)
