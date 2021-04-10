@@ -239,7 +239,7 @@ def run_simulation():
 
 
     predict_graph.update_layout(template='seaborn', autosize=False, width=1000, height=1500,
-                                title_text='<b>Optimum Lockdown Model for {} (at Health Care Capacity = {}%)</b>'.format(location_in, hcc_max),
+                                title_text='<b>Optimum Lockdown Model for {} (at Health Care Capacity = {}% of N)</b>'.format(location_in, hcc_max),
                                 legend=dict(orientation="h"))
 
     st.plotly_chart(predict_graph, use_container_width=True)
