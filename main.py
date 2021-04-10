@@ -103,6 +103,8 @@ def run_simulation():
                  r.dt()==gamma*i])
 
     t = np.linspace(0, 200, 101)
+    t = np.insert(t, 1, [0.001, 0.002, 0.004, 0.008, 0.02, 0.04, 0.08, \
+                         0.2, 0.4, 0.8])
     m.time = t
 
     # initialize with simulation
