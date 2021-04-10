@@ -113,10 +113,11 @@ def run_simulation():
 
 
     # plot the prediction
-    predict_graph = make_subplots(rows=4, cols=1, subplot_titles=("SEIR Model - No Lockdown",
-                                                                  "Fraction of Susceptible and Recovered",
-                                                                  "Fraction of Exposed and Infected",
-                                                                  "Degree of Lockdown (0% = None, 100% = Full Lockdown)"
+    predict_graph = make_subplots(rows=4, cols=1, subplot_titles=("<b>SEIR Model - No Lockdown:</b>"\
+                                                                      " R(t) = {}, N = {}".format(Rt_in, N_in),
+                                                                  "<b>Fraction of Susceptible and Recovered</b>",
+                                                                  "<b>Fraction of Exposed and Infected</b>",
+                                                                  "<b>Degree of Lockdown:</b> 0% = None, 100% = Full Lockdown"
                                                                   ))
 
     predict_graph.add_trace(go.Scatter(x=m.time, y=s.value, name='Susceptible',
@@ -206,12 +207,13 @@ def run_simulation():
                                        name="14-day Adjusted Optimal Lockdown",
                                        mode='lines', line=dict(color='black', dash='dot',
                                                                width=2, shape='vh')), row=4, col=1)
-    predict_graph.update_xaxes(title_text="Time (Days)", row=4, col=1, zeroline=True, zerolinecolor='black')
+    predict_graph.update_xaxes(title_text="Time (Days)", row=4, col=1, zeroline=True,
+                               range=[0, 100], zerolinecolor='black')
     predict_graph.update_yaxes(title_text='% Lockdown Strength', row=4, col=1, zeroline=True, zerolinecolor='black')
 
 
     predict_graph.update_layout(template='seaborn', autosize=False, width=1000, height=1500,
-                                title_text='Optimum Lockdown Model for {}'.format(location_in),
+                                title_text='<b>Optimum Lockdown Model for {} (at Health Care Capacity = {}%)</b>'.format(location_in, hcc_max),
                                 legend=dict(orientation="h"))
 
     st.plotly_chart(predict_graph, use_container_width=True)
