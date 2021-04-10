@@ -10,7 +10,7 @@ import base64
 
 # Title
 st.title('Optimal Lockdown Calculator')
-st.markdown('###### **Beta Version:** 1.01')
+st.markdown('###### **Beta Version:** 2.00')
 st.markdown('##')
 st.write('This web-based app aims to aid policymakers in identifying the optimal lockdown strength and duration needed\n'
          'to reduce transmission of the SARS-Cov-2 virus and at the same time, reducing the economic loss due to prolonged\n'
@@ -90,7 +90,7 @@ def run_simulation():
     beta = Rt_in*gamma
 
     m = GEKKO()
-    u = m.MV(0,lb=0.0,ub=0.8)
+    u = m.MV(0,lb=0.0,ub=1.0)
 
     s,e,i,r = m.Array(m.Var,4)
     s.value = s_initial
@@ -176,7 +176,7 @@ def run_simulation():
     predict_graph.update_yaxes(title_text='Fraction', row=3, col=1, zeroline=True, zerolinecolor='black')
 
 
-    d = {'Day': m.time, '% Lockdown Strength': u.value}
+    d = {'Day': m.time, '% Lockdown Strength': u.value, '% Adjusted Lockdown Strength': 0}
     df_time = pd.DataFrame(data=d)
     df_time['% Lockdown Strength'] = (df_time['% Lockdown Strength']*100)
     df_time['% Lockdown Strength'] = df_time['% Lockdown Strength'].round(2)
@@ -198,6 +198,15 @@ def run_simulation():
     df_time['% Adjusted Lockdown Strength'].iloc[99:101] = df_time['% Lockdown Strength'].iloc[99:101].max()
     df_time.Day = df_time.Day.astype(int)
 
+    conditions = [
+        (df_time['% Adjusted Lockdown Strength'] >= 75.0),
+        (df_time['% Adjusted Lockdown Strength'] >= 50.0) & (df_time['% Lockdown Strength'] < 75.0),
+        (df_time['% Adjusted Lockdown Strength'] >= 25.0) & (df_time['% Lockdown Strength'] < 50.0),
+        (df_time['% Adjusted Lockdown Strength'] > 0.0) & (df_time['% Lockdown Strength'] < 25.0),
+        (df_time['% Adjusted Lockdown Strength'] == 0.0)]
+
+    choices = ['ECQ', 'MECQ', 'GCQ', 'MGCQ', 'N/A']
+    df_time['Recommendation'] = np.select(conditions, choices, default='black')
 
 
     predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Lockdown Strength'],
@@ -210,6 +219,23 @@ def run_simulation():
     predict_graph.update_xaxes(title_text="Time (Days)", row=4, col=1, zeroline=True,
                                range=[0, 100], zerolinecolor='black')
     predict_graph.update_yaxes(title_text='% Lockdown Strength', row=4, col=1, zeroline=True, zerolinecolor='black')
+
+
+    predict_graph.add_hrect(y0=75, y1=100, fillcolor="orange", opacity=0.25,
+                            layer="below", line_width=0, annotation_text="<b>ECQ</b>", annotation_position="top right",
+                            row=4, col=1)
+
+    predict_graph.add_hrect(y0=50, y1=75, fillcolor="yellow", opacity=0.25,
+                            layer="below", line_width=0, annotation_text="<b>MECQ</b>", annotation_position="top right",
+                            row=4, col=1)
+
+    predict_graph.add_hrect(y0=25, y1=50, fillcolor="palegreen", opacity=0.25,
+                            layer="below", line_width=0, annotation_text="<b>GCQ</b>", annotation_position="top right",
+                            row=4, col=1)
+
+    predict_graph.add_hrect(y0=0, y1=25, fillcolor="lime", opacity=0.25,
+                            layer="below", line_width=0, annotation_text="<b>MGCQ</b>", annotation_position="top right",
+                            row=4, col=1)
 
 
     predict_graph.update_layout(template='seaborn', autosize=False, width=1000, height=1500,
@@ -226,7 +252,8 @@ def run_simulation():
         header=dict(values=list(df_time.columns),
                     fill_color='lightskyblue',
                     align='left'),
-        cells=dict(values=[df_time['Day'], df_time['% Lockdown Strength'], df_time['% Adjusted Lockdown Strength']],
+        cells=dict(values=[df_time['Day'], df_time['% Lockdown Strength'],
+                           df_time['% Adjusted Lockdown Strength'], df_time['Recommendation']],
                    fill_color='azure',
                    align='left'))
     ])
