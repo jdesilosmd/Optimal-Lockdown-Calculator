@@ -250,6 +250,7 @@ def run_simulation():
     # Generate a table of results
 
     st.markdown('### Detailed table of recommended lockdown strength adjustment every 2 days and 14 days (for 200 days):')
+    st.markdown('#### ')
     df_time_table = go.Figure(data=[go.Table(
         header=dict(values=list(df_time.columns),
                     fill_color='lightskyblue',
