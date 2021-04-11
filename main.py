@@ -214,7 +214,7 @@ def run_simulation():
     predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Lockdown Strength'].iloc[5:36],
                                        name="Optimal Lockdown (0=None, 1=Full Lockdown)",
                                        mode='lines', line=dict(color='red', width=2, shape='vh')), row=4, col=1)
-    predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Adjusted Lockdown Strength'],
+    predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Adjusted Lockdown Strength'].iloc[5:36],
                                        name="14-day Adjusted Optimal Lockdown",
                                        mode='lines', line=dict(color='black', dash='dot',
                                                                width=2, shape='vh')), row=4, col=1)
