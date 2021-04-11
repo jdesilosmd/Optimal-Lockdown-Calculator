@@ -219,7 +219,7 @@ def run_simulation():
                                        mode='lines', line=dict(color='black', dash='dot',
                                                                width=2, shape='vh')), row=4, col=1)
     predict_graph.update_xaxes(title_text="Time (Days)", row=4, col=1, zeroline=True,
-                               range=[5, 36], zerolinecolor='black')
+                               range=[0, 36], zerolinecolor='black')
     predict_graph.update_yaxes(title_text='% Lockdown Strength', row=4, col=1, zeroline=True, zerolinecolor='black')
 
 
