@@ -211,15 +211,15 @@ def run_simulation():
     df_time['Recommendation'] = np.select(conditions, choices, default='black')
 
 
-    predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Lockdown Strength'].iloc[5:36],
+    predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Lockdown Strength'],
                                        name="Optimal Lockdown (0=None, 1=Full Lockdown)",
                                        mode='lines', line=dict(color='red', width=2, shape='vh')), row=4, col=1)
-    predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Adjusted Lockdown Strength'].iloc[5:36],
+    predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Adjusted Lockdown Strength'],
                                        name="14-day Adjusted Optimal Lockdown",
                                        mode='lines', line=dict(color='black', dash='dot',
                                                                width=2, shape='vh')), row=4, col=1)
     predict_graph.update_xaxes(title_text="Time (Days)", row=4, col=1, zeroline=True,
-                               range=[0, 100], zerolinecolor='black')
+                               range=[5, 36], zerolinecolor='black')
     predict_graph.update_yaxes(title_text='% Lockdown Strength', row=4, col=1, zeroline=True, zerolinecolor='black')
 
 
