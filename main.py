@@ -103,8 +103,8 @@ def run_simulation():
                  r.dt()==gamma*i])
 
     t = np.linspace(0, 200, 101)
-#    t = np.insert(t, 1, [0.001, 0.002, 0.004, 0.008, 0.02, 0.04, 0.08, \
-#                         0.2, 0.4, 0.8])
+    t = np.insert(t, 1, [0.001, 0.002, 0.004, 0.008, 0.02, 0.04, 0.08, \
+                         0.2, 0.4, 0.8])
     m.time = t
 
     # initialize with simulation
@@ -211,7 +211,7 @@ def run_simulation():
     df_time['Recommendation'] = np.select(conditions, choices, default='black')
 
 
-    predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Lockdown Strength'][0:31],
+    predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Lockdown Strength'].iloc[5:36],
                                        name="Optimal Lockdown (0=None, 1=Full Lockdown)",
                                        mode='lines', line=dict(color='red', width=2, shape='vh')), row=4, col=1)
     predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Adjusted Lockdown Strength'],
