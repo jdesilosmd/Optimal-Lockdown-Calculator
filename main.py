@@ -211,7 +211,7 @@ def run_simulation():
     df_time['Recommendation'] = np.select(conditions, choices, default='black')
 
 
-    predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Lockdown Strength'],
+    predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Lockdown Strength'][0:31],
                                        name="Optimal Lockdown (0=None, 1=Full Lockdown)",
                                        mode='lines', line=dict(color='red', width=2, shape='vh')), row=4, col=1)
     predict_graph.add_trace(go.Scatter(x=df_time['Day'], y=df_time['% Adjusted Lockdown Strength'],
