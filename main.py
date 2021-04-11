@@ -90,7 +90,7 @@ def run_simulation():
     beta = Rt_in*gamma
 
     m = GEKKO()
-    u = m.MV(0,lb=0.0, ub=0.9)
+    u = m.MV(0,lb=0.1, ub=0.9)
 
     s,e,i,r = m.Array(m.Var,4)
     s.value = s_initial
